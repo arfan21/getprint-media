@@ -11,7 +11,7 @@ import (
 
 type MediaServices interface {
 	Create(ctx context.Context, file *multipart.FileHeader) (*models.Media, error)
-	Delete(ctx context.Context, id uint) error
+	Delete(ctx context.Context, url string) error
 }
 
 type mediaServices struct {
@@ -50,8 +50,8 @@ func (srv *mediaServices) Create(ctx context.Context, file *multipart.FileHeader
 	return data, nil
 }
 
-func (srv *mediaServices) Delete(ctx context.Context, id uint) error {
-	data, err := srv.mediaRepo.GetByID(ctx, id)
+func (srv *mediaServices) Delete(ctx context.Context, url string) error {
+	data, err := srv.mediaRepo.GetByURL(ctx, url)
 	if err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func (srv *mediaServices) Delete(ctx context.Context, id uint) error {
 		return err
 	}
 
-	err = srv.mediaRepo.Delete(ctx, id)
+	err = srv.mediaRepo.Delete(ctx, url)
 	if err != nil {
 		return err
 	}

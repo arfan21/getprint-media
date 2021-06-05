@@ -9,8 +9,8 @@ import (
 
 type MediaRepository interface {
 	Create(ctx context.Context, data *models.Media) error
-	Delete(ctx context.Context, id uint) error
-	GetByID(ctx context.Context, id uint) (*models.Media, error)
+	Delete(ctx context.Context, url string) error
+	GetByURL(ctx context.Context, url string) (*models.Media, error)
 }
 
 type mediaRepository struct {
@@ -25,9 +25,9 @@ func (repo *mediaRepository) Create(ctx context.Context, data *models.Media) err
 	return repo.db.WithContext(ctx).Create(data).Error
 }
 
-func (repo *mediaRepository) GetByID(ctx context.Context, id uint) (*models.Media, error) {
+func (repo *mediaRepository) GetByURL(ctx context.Context, url string) (*models.Media, error) {
 	media := new(models.Media)
-	err := repo.db.WithContext(ctx).First(media, id).Error
+	err := repo.db.WithContext(ctx).Where("url = ?", url).First(media).Error
 	if err != nil {
 		return nil, err
 	}
@@ -35,6 +35,6 @@ func (repo *mediaRepository) GetByID(ctx context.Context, id uint) (*models.Medi
 	return media, nil
 }
 
-func (repo *mediaRepository) Delete(ctx context.Context, id uint) error {
-	return repo.db.WithContext(ctx).Unscoped().Delete(&models.Media{}, id).Error
+func (repo *mediaRepository) Delete(ctx context.Context, url string) error {
+	return repo.db.WithContext(ctx).Unscoped().Where("url = ?", url).Delete(&models.Media{}).Error
 }

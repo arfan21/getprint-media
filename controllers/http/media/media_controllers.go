@@ -3,7 +3,6 @@ package media
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/arfan21/getprint-media/helpers"
 	_mediaRepo "github.com/arfan21/getprint-media/repository/mysql/media"
@@ -44,15 +43,9 @@ func (ctrl *mediaControllers) Create(c echo.Context) error {
 }
 
 func (ctrl *mediaControllers) Delete(c echo.Context) error {
-	idParam := c.Param("id")
+	url := c.QueryParam("url")
 
-	id, err := strconv.ParseUint(idParam, 10, 32)
-
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, helpers.Response("error", err.Error(), nil))
-	}
-
-	err = ctrl.mediaSrv.Delete(c.Request().Context(), uint(id))
+	err := ctrl.mediaSrv.Delete(c.Request().Context(), url)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helpers.Response("error", err.Error(), nil))
 	}
