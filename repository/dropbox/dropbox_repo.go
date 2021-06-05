@@ -1,7 +1,6 @@
 package dropbox
 
 import (
-	"crypto/rand"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -12,6 +11,7 @@ import (
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox"
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/files"
 	"github.com/dropbox/dropbox-sdk-go-unofficial/dropbox/sharing"
+	uuid "github.com/satori/go.uuid"
 )
 
 type DropboxSdkFiles interface {
@@ -49,13 +49,8 @@ func NewDropboxRepository() Dropbox {
 func (repo dbx) Uploader(file *multipart.FileHeader) (path string, err error) {
 	oldFilename := file.Filename
 	extensionFile := filepath.Ext(oldFilename)
-	randArrayByte := make([]byte, 10)
-	if _, err := rand.Read(randArrayByte); err != nil {
-		return "", err
-	}
 
-	randString := fmt.Sprintf("%X", randArrayByte)
-	filename := randString + extensionFile
+	filename := generateFilename(extensionFile)
 
 	srcFile, err := file.Open()
 	if err != nil {
@@ -112,4 +107,9 @@ func (repo dbx) Delete(path string) error {
 	}
 
 	return nil
+}
+
+func generateFilename(extensionFile string) string {
+	uuid := uuid.NewV4().String()
+	return fmt.Sprintf("%s%s", uuid, extensionFile)
 }
