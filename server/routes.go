@@ -21,8 +21,8 @@ func NewRouter(mySqlClient mysql.Client) *echo.Echo{
 	mediaCtrl := ctrl.NewMediaControllers(mediaSrv)
 
 	apiMedia := apiV1.Group("/media")
-	apiMedia.POST("/", mediaCtrl.Create)
-	apiMedia.DELETE("/", mediaCtrl.Delete)
+	apiMedia.POST("", mediaCtrl.Create)
+	apiMedia.DELETE("", mediaCtrl.Delete)
 
 	return route
 }
