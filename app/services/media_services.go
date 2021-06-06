@@ -1,12 +1,12 @@
-package media
+package services
 
 import (
 	"context"
 	"mime/multipart"
 
-	"github.com/arfan21/getprint-media/models"
-	"github.com/arfan21/getprint-media/repository/dropbox"
-	_mediaRepo "github.com/arfan21/getprint-media/repository/mysql/media"
+	"github.com/arfan21/getprint-media/app/models"
+	"github.com/arfan21/getprint-media/app/repository/dropbox"
+	repo "github.com/arfan21/getprint-media/app/repository/mysql"
 )
 
 type MediaServices interface {
@@ -15,11 +15,11 @@ type MediaServices interface {
 }
 
 type mediaServices struct {
-	mediaRepo _mediaRepo.MediaRepository
+	mediaRepo repo.MediaRepository
 	dbx       dropbox.Dropbox
 }
 
-func NewMediaServices(mediaRepo _mediaRepo.MediaRepository) MediaServices {
+func NewMediaServices(mediaRepo repo.MediaRepository) MediaServices {
 	dbx := dropbox.NewDropboxRepository()
 
 	return &mediaServices{mediaRepo, dbx}
